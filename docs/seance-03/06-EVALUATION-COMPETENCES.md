@@ -10,15 +10,21 @@
 Valider les compétences acquises en développement de contrôleurs resource et création de vues Blade avancées.
 
 ### **⏱️ Modalités**
-- **Durée :** 45 minutes
+- **Durée :** 50 minutes ⏰ **AJUSTÉ**
 - **Type :** Évaluation pratique individuelle
-- **Support :** Documentation Laravel autorisée
+- **Support :** Documentation Laravel + Fiche mémo autorisées
 - **Outils :** VS Code, navigateur, terminal
+- **💡 Templates Blade :** Vous pouvez utiliser `resources/views/templates/` comme référence
 
 ### **📊 Barème**
 - **Total :** 20 points
 - **Seuil de validation :** 12/20
 - **Excellent :** 16/20 et plus
+
+### **⚡ Simplifications pour 50 minutes**
+- **Vues requises :** 2 vues seulement (INDEX + CREATE) au lieu de 4
+- **Validation :** Règles de base uniquement
+- **Relations :** Affichage simple sans optimisation avancée
 
 ---
 
@@ -141,37 +147,34 @@ php artisan make:controller AuteurController --resource
 
 ---
 
-## 🎨 Partie 3 : Vues Blade (6 points)
+## 🎨 Partie 3 : Vues Blade (6 points) ⚡ SIMPLIFIÉ
 
-### **📝 Exercice 3.1 : Vue Index (2 points)**
+> **💡 Astuce** : Vous pouvez utiliser les templates fournis dans `resources/views/templates/` comme point de départ !
+
+### **📝 Exercice 3.1 : Vue Index (3 points)**
 
 **Créer `resources/views/auteurs/index.blade.php` :**
 - Tableau responsive avec Bootstrap
-- Colonnes : Nom, Nationalité, Naissance, Nb Livres, Statut, Actions
+- Colonnes : Nom, Nationalité, Date naissance, Statut, Actions
 - Pagination avec liens
 - Bouton "Ajouter un auteur"
-- Badge pour le statut actif/inactif
+- Badge pour le statut actif/inactif (vert/gris)
 
-### **📝 Exercice 3.2 : Vue Show (1.5 points)**
+**� Conseil :** Utilisez `resources/views/templates/index.blade.php` comme base et adaptez-le.
 
-**Créer `resources/views/auteurs/show.blade.php` :**
-- Affichage de toutes les informations de l'auteur
-- Liste des livres de cet auteur (si applicable)
-- Boutons "Modifier" et "Supprimer"
-- Lien vers le site web (si renseigné)
+### **📝 Exercice 3.2 : Formulaire Create (3 points)**
 
-### **📝 Exercice 3.3 : Formulaires Create/Edit (2.5 points)**
-
-**Créer les vues de formulaire :**
-- `resources/views/auteurs/create.blade.php`
-- `resources/views/auteurs/edit.blade.php`
-
-**Spécifications des formulaires :**
+**Créer `resources/views/auteurs/create.blade.php` :**
+- Formulaire avec méthode POST vers route `auteurs.store`
 - Tous les champs avec labels appropriés
 - Validation visuelle (classes Bootstrap pour erreurs)
-- Affichage des erreurs de validation
+- Affichage des erreurs avec `@error`
 - Conservation des valeurs saisies (`old()`)
-- Boutons d'action (Sauvegarder, Annuler)
+- Boutons "Enregistrer" et "Annuler"
+
+**💡 Conseil :** Utilisez `resources/views/templates/create.blade.php` comme base et adaptez-le.
+
+**⚠️ Simplification :** Les vues SHOW et EDIT ne sont **pas demandées** pour gagner du temps.
 
 ---
 
@@ -214,9 +217,10 @@ php artisan make:controller AuteurController --resource
 - [ ] Redirections appropriées
 
 **Vues :**
-- [ ] Vue index avec tableau et pagination
-- [ ] Vue show avec informations complètes
-- [ ] Formulaires create/edit fonctionnels
+- [ ] Vue index avec tableau et pagination ✅ OBLIGATOIRE
+- [ ] Formulaire create fonctionnel ✅ OBLIGATOIRE
+- [ ] Vue show (optionnel - bonus)
+- [ ] Formulaire edit (optionnel - bonus)
 - [ ] Design Bootstrap cohérent
 
 **UX :**

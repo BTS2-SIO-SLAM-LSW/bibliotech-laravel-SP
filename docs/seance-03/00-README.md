@@ -1,7 +1,39 @@
 # 🎭 Séance 3 — Contrôleurs & Vues Avancées
 
 **Durée :** 3 heures  
-**Objectif :** Maîtriser les contrôleurs resource et développer un système de vues sophistiqué avec Laravel
+**Objectif :** Maîtriser les ## 🕒 Planning Recommandé (3 heures) ✅ AJUSTÉ
+
+### **📚 Pour les Débutants** (3h - 180 min)
+```bash
+1. Lire 01-CONCEPTS + 02-GLOSSAIRE (25 min)
+2. Faire 03-DECOUVERTE (35 min)
+3. PAUSE (10 min) ☕
+4. Faire 04-TP-PRATIQUE avec templates (60 min)
+   💡 Utiliser les templates Blade dans resources/views/templates/
+5. Faire 06-EVALUATION simplifiée (50 min)
+
+TOTAL: 180 minutes (3h exactes)
+```
+
+### **🚀 Pour les Confirmés** (3h - 180 min)
+```bash
+1. Survoler 01-CONCEPTS + 02-GLOSSAIRE (15 min)
+2. Faire 03-DECOUVERTE (30 min)
+3. Faire 04-TP-PRATIQUE (60 min)
+   💡 Créer vos vues sans les templates
+4. PAUSE (10 min) ☕
+5. Faire 05-TP-PRATIQUE-EXERCICES Modules 1-3 (45 min)
+   ⚠️ Module 5 (Performance) = OPTIONNEL (à faire à la maison)
+6. Faire 06-EVALUATION (20 min)
+
+TOTAL: 180 minutes (3h exactes)
+```
+
+### **⚡ Adaptations Pédagogiques**
+- **Templates Blade fournis** : Gain de 15-20 min sur création des vues
+- **Module 5 optionnel** : Performance/Export (PDF/Excel) = Exercice bonus maison
+- **Évaluation simplifiée** : 2 vues au lieu de 4 pour les débutants
+- **Pauses intégrées** : 10 min pour éviter la fatiguece et développer un système de vues sophistiqué avec Laravel
 
 ---
 

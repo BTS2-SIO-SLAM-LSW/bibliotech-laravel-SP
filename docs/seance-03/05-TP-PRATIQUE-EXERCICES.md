@@ -13,9 +13,15 @@
 - ✅ **Implémenter des fonctionnalités** avancées (recherche, filtres, export)
 - ✅ **Maîtriser la validation** complexe et personnalisée
 
-**⏱️ Durée totale :** 75 minutes (15 min par module)
+**⏱️ Durée recommandée :** 60 minutes (Modules 1-4 uniquement)
 **🎓 Niveau :** Autonome (solutions disponibles séparément)
-**📝 Recommandation :** Choisir 3-4 modules selon le niveau de la classe
+**📝 Planning suggéré :**
+- **Débutants** : Modules 1-2 uniquement (30 min)
+- **Intermédiaires** : Modules 1-2-3 (45 min)
+- **Confirmés** : Modules 1-2-3-4 (60 min)
+- **Module 5 = 🏠 OPTIONNEL (Bonus maison)** - Performance/Export avancé
+
+⚠️ **IMPORTANT** : Le Module 5 nécessite l'installation de packages externes (PDF/Excel) et des concepts avancés (Cache/Redis). Il est **recommandé de le faire à la maison** ou en dehors de la séance de 3h.
 
 ---
 
@@ -411,6 +417,31 @@ public function index(Request $request)
 
 ### **🏗️ Exercice 5.2 : Export PDF et Excel**
 
+## ⚡ Module 5 : Performance & Export (30 min) 🏠 OPTIONNEL - BONUS MAISON
+
+> **⚠️ ATTENTION** : Ce module est **OPTIONNEL** et doit être fait **à la maison** ou en dehors de la séance de 3h.  
+> Il nécessite l'installation de packages externes (PDF/Excel) et des concepts avancés (Cache/Redis).  
+> **Durée estimée :** 30-40 minutes (installation incluse)
+
+### **🎯 Objectif :** Optimiser les performances et ajouter des fonctionnalités d'export avancées
+
+### **🏗️ Exercice 5.1 : Optimisation des Requêtes**
+
+**📝 Objectifs :**
+- Utiliser `select()` pour limiter les colonnes chargées
+- Implémenter le Eager Loading pour éviter le problème N+1
+- Indexer les colonnes fréquemment recherchées
+- Utiliser `chunk()` pour les gros volumes
+
+**💡 Pourquoi c'est important ?**
+- Réduction du temps de chargement de 50-80%
+- Moins de consommation mémoire
+- Meilleure expérience utilisateur
+
+---
+
+### **🏗️ Exercice 5.2 : Export PDF et Excel**
+
 **📝 Installer les dépendances :**
 
 ```bash
@@ -448,9 +479,14 @@ public function exportExcel(Request $request)
 - Cache des statistiques (nombre total de livres, etc.)
 - Invalidation intelligente du cache
 
+**💡 Ressources pour Module 5 :**
+- Documentation Laravel Cache : https://laravel.com/docs/cache
+- Laravel Excel : https://docs.laravel-excel.com/
+- Laravel DomPDF : https://github.com/barryvdh/laravel-dompdf
+
 ---
 
-## 🎯 Challenges Bonus (Optionnels)
+## 🎯 Challenges Bonus (Optionnels - Hors Séance)
 
 ### **🚀 Challenge 1 : API REST**
 Créer une API REST complète pour les livres avec :
@@ -479,17 +515,21 @@ Implémenter des fonctionnalités avancées :
 
 ### **📊 Barème de Notation (sur 20 points)**
 
+**⚠️ Module 5 exclu du barème principal (optionnel)**
+
 | Critère | Points | Description |
 |---------|---------|-------------|
-| **Module 1** | 4 pts | Recherche et filtres fonctionnels |
-| **Module 2** | 4 pts | Composants réutilisables et bien structurés |
-| **Module 3** | 4 pts | Validation robuste et messages clairs |
-| **Module 4** | 4 pts | Interface responsive et UX soignée |
-| **Module 5** | 4 pts | Optimisations et fonctionnalités avancées |
+| **Module 1** | 5 pts | Recherche et filtres fonctionnels |
+| **Module 2** | 5 pts | Composants réutilisables et bien structurés |
+| **Module 3** | 5 pts | Validation robuste et messages clairs |
+| **Module 4** | 5 pts | Interface responsive et UX soignée |
+| **Module 5** | **BONUS** | Optimisations et export (si fait à la maison) |
 
-### **🎯 Niveaux de Compétence**
+**💡 Note :** Le Module 5 peut rapporter des points bonus si réalisé en dehors de la séance.
 
-- **16-20 pts :** Expert - Maîtrise complète des concepts avancés
+### **🎯 Niveaux de Compétence (sur 20)**
+
+- **16-20 pts :** Expert - Maîtrise complète des Modules 1-4
 - **12-15 pts :** Avancé - Bonnes pratiques respectées
 - **8-11 pts :** Intermédiaire - Fonctionnalités de base implémentées
 - **4-7 pts :** Débutant - Travail à approfondir

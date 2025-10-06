@@ -231,6 +231,17 @@ php artisan route:list --path=livres
 
 ### **🎯 Objectif :** Créer toutes les vues Blade avec un design moderne
 
+💡 **ASTUCE GAIN DE TEMPS** : Des templates de démarrage sont fournis dans `resources/views/templates/` !  
+Vous pouvez les copier et les adapter au lieu de partir de zéro. Gain estimé : **15-20 minutes** ⚡
+
+```bash
+# Copier les templates (optionnel)
+cp resources/views/templates/index.blade.php resources/views/livres/index.blade.php
+cp resources/views/templates/show.blade.php resources/views/livres/show.blade.php
+cp resources/views/templates/create.blade.php resources/views/livres/create.blade.php
+cp resources/views/templates/edit.blade.php resources/views/livres/edit.blade.php
+```
+
 ### **🔧 Étape 2.1 : Créer la Structure des Vues**
 
 ```bash
