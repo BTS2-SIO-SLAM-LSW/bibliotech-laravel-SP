@@ -1,135 +1,107 @@
 @echo off
+REM Simple start script for Windows (ASCII only)
 chcp 65001 >nul
-setlocal enabledelayedexpansion
-
-REM ===============================================
-REM Script de Démarrage BiblioTech - Windows
-REM ===============================================
-
-set "GREEN=[32m"
-set "RED=[31m"
-set "YELLOW=[33m"
-set "BLUE=[34m"
-set "NC=[0m"
-set "SUCCESS=✅"
-set "ERROR=❌"
-set "INFO=ℹ️"
-set "ROCKET=🚀"
 
 echo.
-echo %BLUE%╔══════════════════════════════════════════════════════════════╗%NC%
-echo %BLUE%║  %ROCKET% Démarrage de BiblioTech Laravel                       ║%NC%
-echo %BLUE%╚══════════════════════════════════════════════════════════════╝%NC%
+echo ==============================================
+echo Starting BiblioTech (simple Windows script)
+echo ==============================================
 echo.
 
-REM Vérifier si PHP est installé
+REM Check PHP
 where php >nul 2>&1
 if errorlevel 1 (
-    echo %ERROR% PHP n'est pas installé ou pas dans le PATH
-    echo %INFO% Veuillez installer XAMPP, WAMP ou PHP
+    echo ERROR: PHP is not installed or not in PATH
+    echo Please install PHP and add it to PATH (e.g. C:\PHP)
     pause
     exit /b 1
 )
 
-REM Vérifier si on est dans un projet Laravel
+REM Check artisan
 if not exist "artisan" (
-    echo %ERROR% Console Artisan non trouvée
-    echo %INFO% Assurez-vous d'être dans le répertoire du projet Laravel
+    echo ERROR: artisan not found. Are you in the project root?
     pause
     exit /b 1
 )
 
-REM Vérifier si .env existe
+REM Ensure .env exists
 if not exist ".env" (
-    echo %YELLOW% Fichier .env manquant, création depuis .env.example...%NC%
+    echo Creating .env from .env.example
     if exist ".env.example" (
         copy ".env.example" ".env" >nul
-        echo %SUCCESS% Fichier .env créé
+        echo .env created
     ) else (
-        echo %ERROR% Fichier .env.example manquant
+        echo ERROR: .env.example missing
         pause
         exit /b 1
     )
 )
 
-REM Vérifier si APP_KEY est configurée
+REM Generate app key if missing
 findstr /C:"APP_KEY=base64:" .env >nul 2>&1
 if errorlevel 1 (
-    echo %YELLOW% Génération de la clé d'application...%NC%
+    echo Generating application key...
     php artisan key:generate
     if errorlevel 1 (
-        echo %ERROR% Erreur lors de la génération de la clé
+        echo ERROR: failed to generate app key
         pause
         exit /b 1
     )
-    echo %SUCCESS% Clé d'application générée
+    echo App key generated
 )
 
-REM Vérifier les dépendances Composer
+REM Install Composer deps if needed
 if not exist "vendor" (
-    echo %YELLOW% Installation des dépendances PHP...%NC%
+    echo Installing PHP dependencies (composer)...
     where composer >nul 2>&1
     if errorlevel 1 (
-        echo %ERROR% Composer n'est pas installé
-        echo %INFO% Téléchargez Composer depuis getcomposer.org
+        echo ERROR: Composer not found. Install Composer (https://getcomposer.org)
         pause
         exit /b 1
     )
-    
     composer install --no-dev --optimize-autoloader
     if errorlevel 1 (
-        echo %ERROR% Erreur lors de l'installation des dépendances
+        echo ERROR: composer install failed
         pause
         exit /b 1
     )
-    echo %SUCCESS% Dépendances PHP installées
+    echo Composer dependencies installed
 )
 
-REM Nettoyer le cache Laravel
-echo %INFO% Nettoyage du cache Laravel...
+echo Clearing caches...
 php artisan config:clear >nul 2>&1
 php artisan cache:clear >nul 2>&1
 php artisan view:clear >nul 2>&1
 
-REM Vérifier la base de données
-echo %INFO% Vérification de la base de données...
+echo Checking database connection (migrations)...
 php artisan migrate:status >nul 2>&1
 if errorlevel 1 (
-    echo %YELLOW% Base de données non configurée ou inaccessible%NC%
-    echo %INFO% Vous devrez configurer la base de données dans .env
+    echo WARNING: database might not be configured or accessible. Check .env
 ) else (
-    echo %SUCCESS% Base de données accessible
+    echo Database accessible
 )
 
-REM Créer le lien symbolique pour le storage
+REM Create storage link if missing
 if not exist "public\storage" (
-    echo %INFO% Création du lien symbolique storage...
+    echo Creating storage link...
     php artisan storage:link >nul 2>&1
     if not errorlevel 1 (
-        echo %SUCCESS% Lien storage créé
+        echo Storage link created
     )
 )
 
-REM Vérifier si le port 8000 est libre
+REM Choose port 8000 if free
 netstat -an | findstr ":8000" >nul 2>&1
 if not errorlevel 1 (
-    echo %YELLOW% Le port 8000 est déjà utilisé%NC%
-    echo %INFO% L'application sera démarrée sur un autre port
+    echo Port 8000 is in use. Starting on automatic port.
     set PORT_OPTION=
 ) else (
     set PORT_OPTION=--port=8000
 )
 
-echo.
-echo %GREEN%🚀 Démarrage du serveur Laravel...%NC%
-echo %INFO% L'application sera accessible dans votre navigateur
-echo %INFO% Appuyez sur Ctrl+C pour arrêter le serveur
-echo.
-
-REM Démarrer le serveur de développement
+echo Starting Laravel development server...
 php artisan serve %PORT_OPTION%
 
-REM Si on arrive ici, le serveur s'est arrêté
-echo.
-echo %INFO% Serveur arrêté
+echo Server stopped
 pause
+
