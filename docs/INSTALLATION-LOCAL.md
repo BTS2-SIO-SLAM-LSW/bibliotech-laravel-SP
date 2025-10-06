@@ -23,6 +23,109 @@
 - PHP 8.3+ et Composer
 - Node.js 18+ (optionnel pour compilation assets)
 
+#### Installer PHP 8.3+, Composer et Node.js (sans Docker)
+
+Si vous ne souhaitez pas utiliser Docker, suivez ces instructions courtes par système d'exploitation pour installer PHP 8.3+, Composer et (optionnel) Node.js 18 :
+
+##### Windows (PowerShell)
+
+1. Installer PHP 8.3 : soit via l'installateur officiel (https://windows.php.net/download) soit via winget :
+
+```powershell
+winget install --id=PHP.PHP.8.3 -e
+# si winget ne trouve pas, téléchargez l'archive zip et suivez la doc officielle
+```
+
+2. Installer Composer (global) :
+
+```powershell
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+iwr -useb https://getcomposer.org/installer | php
+mv composer.phar C:\bin\composer.phar
+setx PATH "$env:PATH;C:\bin"
+# ou utiliser l'installateur Windows de Composer
+```
+
+3. Installer Node.js 18 (optionnel) :
+
+```powershell
+winget install OpenJS.NodeJS.18 -e
+```
+
+##### macOS (Homebrew)
+
+```bash
+# Installer Homebrew si vous ne l'avez pas
+#/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# PHP 8.3
+brew tap shivammathur/php
+brew install shivammathur/php/php@8.3
+brew link --force --overwrite php@8.3
+
+# Composer
+brew install composer
+
+# Node.js 18 (optionnel)
+brew install node@18
+brew link --force --overwrite node@18
+```
+
+##### Linux (Ubuntu/Debian)
+
+```bash
+# Mettre à jour
+sudo apt update && sudo apt upgrade -y
+
+# Installer dépendances
+sudo apt install -y lsb-release ca-certificates apt-transport-https software-properties-common
+
+# Ajouter PPA pour PHP (Ondřej Surý)
+sudo add-apt-repository ppa:ondrej/php -y
+sudo apt update
+sudo apt install -y php8.3 php8.3-cli php8.3-fpm php8.3-sqlite3 php8.3-mbstring php8.3-xml php8.3-curl php8.3-zip
+
+# Installer Composer
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+php -r "unlink('composer-setup.php');"
+
+# Node.js 18 (NodeSource)
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt install -y nodejs
+
+##### Vérifier les versions
+
+```bash
+php -v
+composer --version
+node -v
+npm -v
+```
+
+Pour compiler les assets si besoin :
+
+```bash
+npm install
+npm run build   # ou npm run dev en développement
+```
+
+# Node.js 18 (NodeSource)
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt install -y nodejs
+```
+
+##### Vérifier les versions
+
+```bash
+php -v
+composer --version
+node -v
+npm -v
+```
+
+Ces étapes permettent d'installer un environnement local complet sans Docker et de compiler les assets si nécessaire (npm install && npm run build).
+
 **Installation :**
 ```bash
 # Clone du projet
@@ -57,28 +160,6 @@ cd bibliotech
 docker-compose up mailhog
 php artisan serve
 
-# Option B : Environnement complet PostgreSQL
-docker-compose --profile database up
-```
-
-**Résultat :** Application PostgreSQL + MailHog à http://localhost:8000
-## 📋 Prérequis Système
-
-### **Méthode 1 : Simple PHP + SQLite**
-- **PHP 8.3+** avec extensions : pdo, pdo_sqlite, openssl, mbstring
-- **Composer** (gestionnaire de paquets PHP)  
-- **Node.js 18+** (optionnel, pour compilation assets)
-- **Git** pour cloner le projet
-
-### **Méthode 2 : Docker + PostgreSQL**
-- **Docker Desktop** installé
-- **Git** pour cloner le projet
-- **VS Code** (recommandé)
-
-### **Systèmes Supportés**
-- **Windows 10/11** (avec ou sans WSL2)
-- **macOS** Intel ou Apple Silicon
-- **Linux** (Ubuntu, Debian, CentOS, etc.)
 
 ---
 
@@ -98,7 +179,7 @@ cd bibliotech
 
 **Le script détecte automatiquement :**
 - ✅ Environnement (local, Codespace, Docker)
-- ✅ Configuration optimal (SQLite ou PostgreSQL)
+- ✅ Configuration optimal (SQLite )
 - ✅ Dépendances manquantes
 - ✅ Installation et démarrage
 
@@ -183,10 +264,9 @@ cd bibliotech
 docker-compose up mailhog -d
 php artisan serve  # Application en SQLite
 
-# Option B : Environnement complet PostgreSQL
-docker-compose --profile database up -d
 
-# Option C : Avec outils admin
+
+# Option B : Avec outils admin
 docker-compose --profile database --profile tools up -d
 ```
 
@@ -206,7 +286,7 @@ docker-compose --profile database --profile tools up -d
 - **Application** : http://localhost:8000
 - **MailHog (emails)** : http://localhost:8025
 - **Adminer (BDD)** : http://localhost:8080 (si profile tools)
-- **PostgreSQL** : localhost:5432 (si profile database)
+
 
 ### **Vérification des Services**
 ```bash
