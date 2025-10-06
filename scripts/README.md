@@ -24,22 +24,10 @@ Script principal pour démarrer l'application sur Windows avec toutes les vérif
 scripts\start.bat
 ```
 
-**Note :** Ce script utilise des caractères Unicode/emoji qui peuvent causer des problèmes d'affichage dans certains terminaux. Si vous rencontrez des caractères illisibles, utilisez `start-windows-simple.bat` à la place.
-
----
-
-#### **`start-windows-simple.bat`** - Démarrage Simplifié (ASCII seulement)
-Version simplifiée sans emoji/caractères Unicode, idéale pour les environnements où le script `start.bat` produit des erreurs d'encodage.
-
-**Usage :**
-```batch
-scripts\start-windows-simple.bat
-```
-
-**Avantages :**
-- ✅ Compatible avec tous les terminaux Windows (CMD, PowerShell, etc.)
-- ✅ Pas de problèmes d'encodage UTF-8/ANSI
-- ✅ Même fonctionnalité que `start.bat` mais sortie ASCII pure
+**Caractéristiques :**
+- ✅ Compatible avec tous les terminaux Windows (CMD, PowerShell, Windows Terminal)
+- ✅ Version ASCII uniquement (pas d'emoji/Unicode) pour éviter les problèmes d'encodage
+- ✅ Sortie claire et lisible dans tous les environnements
 
 ---
 
@@ -132,11 +120,8 @@ bash scripts/install.sh
 
 ### **Démarrage Quotidien (Recommandé)**
 ```batch
-# Windows - Terminal moderne (Windows Terminal, VS Code)
+# Windows
 scripts\start.bat
-
-# Windows - Problèmes d'encodage ou ancien terminal
-scripts\start-windows-simple.bat
 
 # Linux/macOS/WSL
 bash scripts/start.sh
@@ -216,12 +201,8 @@ sudo mv composer.phar /usr/local/bin/composer
 ---
 
 ### **Erreur : Caractères illisibles dans start.bat**
-**Solution :** Utiliser le script simplifié sans Unicode :
-```batch
-scripts\start-windows-simple.bat
-```
-
-Ou configurer le terminal pour UTF-8 :
+**Solution :** Le script `start.bat` a été mis à jour pour utiliser uniquement des caractères ASCII.
+Si vous rencontrez toujours des problèmes, vérifiez l'encodage de votre terminal :
 ```batch
 chcp 65001
 scripts\start.bat
@@ -309,9 +290,8 @@ bash scripts/start.sh                # Linux/macOS
 ## 📝 Maintenance des Scripts
 
 ### **Scripts Conservés (Essentiels)**
-- ✅ `start.bat` - Démarrage Windows principal
+- ✅ `start.bat` - Démarrage Windows (version ASCII, compatible tous terminaux)
 - ✅ `start.sh` - Démarrage Linux/macOS
-- ✅ `start-windows-simple.bat` - Démarrage Windows simplifié (ASCII)
 - ✅ `install.bat` - Installation Windows
 - ✅ `install.sh` - Installation Linux/macOS
 
