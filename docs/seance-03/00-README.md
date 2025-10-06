@@ -64,39 +64,7 @@
 - Système de gestion des auteurs
 - Validation des acquis MVC avancés
 
-- CRUD complet pour livres et catégories- CRUD complet pour livres et catégories
-
-- Validation autonome des compétences- Validation autonome des compétences
-
-
-
-### **6. Évaluation des Compétences**### **6. Évaluation des Compétences**
-
-📊 **[06-EVALUATION-COMPETENCES.md](06-EVALUATION-COMPETENCES.md)**📊 **[06-EVALUATION-COMPETENCES.md](06-EVALUATION-COMPETENCES.md)**
-
-- Tests de validation- Tests de validation
-
-- Checklist des fonctionnalités- Checklist des fonctionnalités
-
-- Critères d'évaluation- Critères d'évaluation
-
-
-
-------
-
-
-
-## 🎪 Guide d'Utilisation Rapide## 🎪 Guide d'Utilisation Rapide
-
-
-
-### **📋 Pour les Débutants** (2h30)### **📋 Pour les Débutants** (2h30)
-
-```bash```bash
-
-1. Lire 01-CONCEPTS (20 min)1. Lire 01-CONCEPTS (20 min)
-
-2. Lire 02-GLOSSAIRE (15 min)2. Lire 02-GLOSSAIRE (15 min)
+---
 
 ---
 
@@ -223,5 +191,7 @@ $validated = $request->validate([
 - **Séance 06 :** Tests automatisés et qualité
 
 **🎉 Excellent parcours dans l'univers des contrôleurs et vues Laravel !**
- 
-Dernière mise à jour: 6 octobre 2025
+
+---
+
+**Dernière mise à jour :** 6 octobre 2025
