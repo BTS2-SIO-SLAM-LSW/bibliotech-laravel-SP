@@ -108,11 +108,12 @@ php artisan serve
 ### **📖 Guides d'Installation Détaillés**
 
 🌟 [Guide GitHub Codespace](docs/INSTALLATION-CODESPACE.md) - **Recommandé pour débuter**  
+🖥️ [Installation Nouveau PC](docs/INSTALLATION-NOUVEAU-PC.md) - **Guide complet A-Z**  
 ⚡ [Démarrage Rapide Local](docs/QUICK-START.md) - Installation en 2 minutes    
 🏠 [Installation Locale Complète](docs/INSTALLATION-LOCAL.md) - Guide détaillé local  
 🐳 [Docker (Optionnel)](docs/DOCKER-OPTIONS.md) - Containerisation avancée
 
-**💡 Conseil :** Commencez par GitHub Codespace si c'est votre première fois avec Laravel !
+**💡 Conseil :** Pour une nouvelle installation, suivez le [Guide Installation Nouveau PC](docs/INSTALLATION-NOUVEAU-PC.md) !
 
 ---
 
