@@ -1,204 +1,558 @@
 # 💪 TP Pratique : Exercices Avancés Autonomes
 
-**5 modules d'exercices progressifs pour maîtriser les contrôleurs et vues**
+**3 modules d'exercices progressifs et pédagogiques pour maîtriser les contrôleurs et vues**
 
 ---
 
 ## 🎯 Objectifs Généraux
 
 À la fin de ces exercices, vous serez capable de :
-- ✅ **Développer des interfaces** utilisateur sophistiquées
-- ✅ **Optimiser les performances** des contrôleurs et requêtes
+- ✅ **Implémenter une recherche** multi-critères avec filtres
 - ✅ **Créer des composants** Blade réutilisables
-- ✅ **Implémenter des fonctionnalités** avancées (recherche, filtres, export)
-- ✅ **Maîtriser la validation** complexe et personnalisée
+- ✅ **Maîtriser la validation** avancée avec Form Requests
 
-**⏱️ Durée recommandée :** 60 minutes (Modules 1-4 uniquement)
+**⏱️ Durée recommandée :** 45 minutes (3 modules de 15 min)
 **🎓 Niveau :** Autonome (solutions disponibles séparément)
 **📝 Planning suggéré :**
-- **Débutants** : Modules 1-2 uniquement (30 min)
-- **Intermédiaires** : Modules 1-2-3 (45 min)
-- **Confirmés** : Modules 1-2-3-4 (60 min)
-- **Module 5 = 🏠 OPTIONNEL (Bonus maison)** - Performance/Export avancé
+- **Débutants** : Module 1 uniquement (15 min)
+- **Intermédiaires** : Modules 1-2 (30 min)
+- **Confirmés** : Modules 1-2-3 (45 min)
 
-⚠️ **IMPORTANT** : Le Module 5 nécessite l'installation de packages externes (PDF/Excel) et des concepts avancés (Cache/Redis). Il est **recommandé de le faire à la maison** ou en dehors de la séance de 3h.
+💡 **Note pédagogique** : Chaque module explique d'abord les **concepts théoriques** avant de passer à la **pratique**.
 
 ---
 
 ## 📋 Vue d'Ensemble des Modules
 
 ```
-🚀 EXERCICES PROGRESSIFS
+🚀 EXERCICES PROGRESSIFS (45 min)
 │
-├── 📊 Module 1: Recherche et Filtres Avancés (15 min)
-│   ├── Recherche multi-critères
-│   ├── Filtres par date et statut
-│   └── URL avec paramètres persistants
+├── 📊 Module 1: Recherche et Filtres (15 min)
+│   ├── 📖 Concepts: Query Builder, Request parameters, Pagination
+│   └── 🛠️ Pratique: Recherche texte + filtre catégorie
 │
-├── 🎨 Module 2: Composants Blade Avancés (15 min)
-│   ├── Composant livre-card personnalisable
-│   ├── Composant pagination custom
-│   └── Composant formulaire réutilisable
+├── 🎨 Module 2: Composants Blade (15 min)
+│   ├── 📖 Concepts: Blade Components, Props, Slots
+│   └── 🛠️ Pratique: Composant carte livre réutilisable
 │
-├── ✅ Module 3: Validation Personnalisée (15 min)
-│   ├── Règles de validation custom
-│   ├── Form Request classes
-│   └── Messages d'erreur personnalisés
-│
-├── 📱 Module 4: Interface Mobile & UX (15 min)
-│   ├── Menu mobile optimisé
-│   ├── Modales et notifications
-│   └── Loading states et feedback
-│
-└── ⚡ Module 5: Performance & Export (15 min)
-    ├── Optimisation des requêtes
-    ├── Export PDF/Excel
-    └── Cache et mémorisation
+└── ✅ Module 3: Validation Avancée (15 min)
+    ├── 📖 Concepts: Form Requests, Règles custom
+    └── 🛠️ Pratique: Validation ISBN avec Form Request
 ```
 
 ---
 
-## 📊 Module 1 : Recherche et Filtres Avancés (12 min)
+## 📊 Module 1 : Recherche et Filtres (15 min)
 
-### **🎯 Objectif :** Implémenter un système de recherche multi-critères avec filtres avancés
+### **📖 Partie 1 : Comprendre les Concepts (5 min)**
 
-### **🏗️ Exercice 1.1 : Recherche Multi-Critères**
+#### **� Concept 1 : Query Builder Dynamique**
 
-**📝 Améliorer la méthode `index` du `LivreController` :**
+Le **Query Builder** de Laravel permet de construire des requêtes SQL de manière progressive :
+
+```php
+// ❌ MAUVAISE APPROCHE : Requête fixe
+$livres = Livre::all(); // Récupère TOUJOURS tous les livres
+
+// ✅ BONNE APPROCHE : Query Builder dynamique
+$query = Livre::query(); // Crée une requête vide
+
+if ($request->filled('search')) {
+    $query->where('titre', 'LIKE', '%' . $request->search . '%');
+}
+
+$livres = $query->get(); // Exécute la requête construite
+```
+
+**💡 Pourquoi c'est utile ?**
+- Permet d'ajouter des filtres **conditionnellement**
+- Évite la duplication de code
+- Plus performant (ne charge que les données nécessaires)
+
+#### **🎓 Concept 2 : Request Parameters**
+
+Les paramètres d'URL permettent de passer des données via GET :
+
+```php
+// URL : /livres?search=Laravel&categorie=1
+
+// Dans le contrôleur :
+$request->filled('search')    // true si paramètre existe ET non vide
+$request->has('search')       // true si paramètre existe (même vide)
+$request->get('search')       // Récupère la valeur
+$request->get('sort', 'titre') // Avec valeur par défaut
+```
+
+#### **🎓 Concept 3 : Pagination avec Filtres**
+
+La pagination doit **conserver les paramètres** de recherche :
+
+```php
+// ❌ PROBLÈME : Les filtres disparaissent au changement de page
+$livres = $query->paginate(10);
+
+// ✅ SOLUTION : Utiliser appends() pour conserver les paramètres
+$livres = $query->paginate(10)->appends($request->all());
+
+// Dans la vue, les liens de pagination incluront : ?search=Laravel&page=2
+```
+
+---
+
+### **🛠️ Partie 2 : Exercice Pratique (10 min)**
+
+#### **📝 Exercice 1.1 : Recherche Simple**
+
+**Objectif** : Permettre de chercher un livre par titre ou auteur
+
+**Étape 1** : Modifier la méthode `index` du `LivreController`
+
+```php
+public function index(Request $request)
+{
+    // 1. Créer une requête de base avec la relation categorie
+    $query = Livre::with('categorie');
+    
+    // 2. TODO: Ajouter la recherche si le paramètre 'search' existe
+    if ($request->filled('search')) {
+        $search = $request->search;
+        
+        // Rechercher dans titre OU auteur (insensible à la casse)
+        $query->where(function($q) use ($search) {
+            $q->where('titre', 'LIKE', "%{$search}%")
+              ->orWhere('auteur', 'LIKE', "%{$search}%");
+        });
+    }
+    
+    // 3. TODO: Exécuter la requête avec pagination (10 par page)
+    $livres = $query->orderBy('titre')->paginate(10);
+    
+    // 4. TODO: Ajouter les paramètres de recherche aux liens de pagination
+    $livres->appends($request->all());
+    
+    return view('livres.index', compact('livres'));
+}
+```
+
+**💡 Explication du code :**
+- `where(function($q) {...})` : Groupe les conditions avec des parenthèses SQL
+- `LIKE "%{$search}%"` : Recherche partielle (contient le texte)
+- `appends($request->all())` : Conserve ?search=... dans les liens de pagination
+
+---
+
+#### **📝 Exercice 1.2 : Filtre par Catégorie**
+
+**Objectif** : Ajouter un filtre pour afficher uniquement les livres d'une catégorie
 
 ```php
 public function index(Request $request)
 {
     $query = Livre::with('categorie');
     
-    // TODO: Implémenter la recherche dans titre ET auteur
+    // Recherche (code précédent)
     if ($request->filled('search')) {
-        $searchTerm = $request->search;
-        // Recherche dans titre, auteur ET résumé
-        // Utiliser whereRaw pour une recherche insensible à la casse
+        // ... (code de l'exercice 1.1)
     }
     
     // TODO: Filtre par catégorie
-    if ($request->filled('categorie')) {
-        // Filtrer par categorie_id
+    if ($request->filled('categorie_id')) {
+        $query->where('categorie_id', $request->categorie_id);
     }
     
-    // TODO: Filtre par disponibilité
-    if ($request->has('disponible')) {
-        // Filtrer selon le statut disponible/indisponible
-    }
+    $livres = $query->orderBy('titre')->paginate(10)->appends($request->all());
     
-    // TODO: Filtre par période de publication
-    if ($request->filled('date_debut') && $request->filled('date_fin')) {
-        // Filtrer entre deux dates
-    }
-    
-    // TODO: Tri dynamique
-    $sortField = $request->get('sort', 'titre');
-    $sortDirection = $request->get('direction', 'asc');
-    // Valider les champs de tri autorisés
-    
-    $livres = $query->orderBy($sortField, $sortDirection)->paginate(12);
+    // TODO: Récupérer toutes les catégories pour le formulaire
     $categories = Categorie::orderBy('nom')->get();
     
     return view('livres.index', compact('livres', 'categories'));
 }
 ```
 
-### **🏗️ Exercice 1.2 : Formulaire de Recherche Avancée**
+---
 
-**📝 Créer un composant `resources/views/components/search-form.blade.php` :**
+#### **📝 Exercice 1.3 : Formulaire de Recherche**
+
+**Objectif** : Créer le formulaire HTML pour la recherche et les filtres
+
+**Créer dans `resources/views/livres/index.blade.php` :**
 
 ```blade
-{{-- TODO: Créer un formulaire de recherche avec : --}}
-{{-- 1. Champ de recherche texte --}}
-{{-- 2. Select pour les catégories --}}
-{{-- 3. Checkbox pour la disponibilité --}}
-{{-- 4. Champs de date (début/fin) --}}
-{{-- 5. Select pour le tri (titre, auteur, date) --}}
-{{-- 6. Boutons Rechercher et Réinitialiser --}}
+@extends('layouts.app')
 
-@props(['categories'])
-
-<div class="card mb-4">
-    <div class="card-header">
-        <h5>🔍 Recherche Avancée</h5>
+@section('content')
+<div class="container mt-4">
+    <h1>📚 Liste des Livres</h1>
+    
+    {{-- Formulaire de recherche --}}
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" action="{{ route('livres.index') }}">
+                <div class="row g-3">
+                    {{-- Champ de recherche --}}
+                    <div class="col-md-6">
+                        <label for="search" class="form-label">🔍 Rechercher</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="search" 
+                               name="search" 
+                               placeholder="Titre ou auteur..."
+                               value="{{ request('search') }}">
+                    </div>
+                    
+                    {{-- Filtre catégorie --}}
+                    <div class="col-md-4">
+                        <label for="categorie_id" class="form-label">📂 Catégorie</label>
+                        <select class="form-select" id="categorie_id" name="categorie_id">
+                            <option value="">Toutes les catégories</option>
+                            @foreach($categories as $categorie)
+                                <option value="{{ $categorie->id }}" 
+                                        {{ request('categorie_id') == $categorie->id ? 'selected' : '' }}>
+                                    {{ $categorie->nom }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    {{-- Boutons --}}
+                    <div class="col-md-2 d-flex align-items-end gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            Rechercher
+                        </button>
+                        <a href="{{ route('livres.index') }}" class="btn btn-secondary">
+                            Réinitialiser
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
-    <div class="card-body">
-        <form method="GET" action="{{ route('livres.index') }}">
-            {{-- À COMPLÉTER --}}
-        </form>
+    
+    {{-- Résultats --}}
+    <div class="card">
+        <div class="card-header">
+            <strong>{{ $livres->total() }}</strong> livre(s) trouvé(s)
+        </div>
+        <div class="card-body">
+            {{-- TODO: Afficher la liste des livres (tableau ou cartes) --}}
+            @forelse($livres as $livre)
+                {{-- Affichage de chaque livre --}}
+            @empty
+                <p class="text-muted">Aucun livre trouvé.</p>
+            @endforelse
+            
+            {{-- Pagination --}}
+            <div class="mt-3">
+                {{ $livres->links() }}
+            </div>
+        </div>
     </div>
 </div>
+@endsection
 ```
 
-### **🏗️ Exercice 1.3 : URL et État Persistants**
-
-**📝 Objectifs :**
-- Les paramètres de recherche doivent persister dans l'URL
-- Les liens de pagination doivent conserver les filtres
-- Bouton "Réinitialiser" pour vider tous les filtres
+**� Points clés à comprendre :**
+- `request('search')` : Récupère la valeur du paramètre pour pré-remplir le formulaire
+- `{{ request('categorie_id') == $categorie->id ? 'selected' : '' }}` : Maintient la sélection
+- `{{ $livres->total() }}` : Affiche le nombre total de résultats
+- `{{ $livres->links() }}` : Génère les liens de pagination avec les filtres
 
 ---
 
-## 🎨 Module 2 : Composants Blade Avancés (12 min)
+### **✅ Vérification du Module 1**
 
-### **🎯 Objectif :** Créer des composants réutilisables pour améliorer la maintenabilité
+**Checklist de validation :**
+- [ ] La recherche fonctionne sur titre ET auteur
+- [ ] Le filtre catégorie fonctionne
+- [ ] Les filtres persistent lors du changement de page
+- [ ] Le bouton "Réinitialiser" supprime tous les filtres
+- [ ] Le nombre total de résultats s'affiche correctement
 
-### **🏗️ Exercice 2.1 : Composant Livre Card Avancé**
+---
 
-**📝 Créer `resources/views/components/livre-card.blade.php` :**
+## 🎨 Module 2 : Composants Blade Réutilisables (15 min)
+
+### **📖 Partie 1 : Comprendre les Concepts (5 min)**
+
+#### **� Concept 1 : Qu'est-ce qu'un Composant Blade ?**
+
+Un **composant Blade** est un **morceau de vue réutilisable** avec sa propre logique.
+
+**Exemple concret :**
+Imaginez que vous affichez des cartes de livres à 5 endroits différents (page d'accueil, recherche, catégorie, favoris, nouveautés). Sans composant :
 
 ```blade
+{{-- ❌ Code DUPLIQUÉ 5 fois --}}
+<div class="card">
+    <div class="card-body">
+        <h5>{{ $livre->titre }}</h5>
+        <p>{{ $livre->auteur }}</p>
+        <span class="badge bg-primary">{{ $livre->categorie->nom }}</span>
+    </div>
+</div>
+```
+
+Avec un composant :
+
+```blade
+{{-- ✅ Code RÉUTILISABLE partout --}}
+<x-livre-card :livre="$livre" />
+```
+
+**💡 Avantages :**
+- **DRY** (Don't Repeat Yourself) : Pas de duplication
+- **Maintenabilité** : Une modification = tous les endroits sont mis à jour
+- **Lisibilité** : Code plus clair et concis
+
+#### **🎓 Concept 2 : Props (Propriétés)**
+
+Les **props** sont les **paramètres** qu'on passe au composant.
+
+```blade
+{{-- Passer des données au composant --}}
+<x-livre-card 
+    :livre="$livre"           {{-- Variable PHP (avec :) --}}
+    show-actions="true"       {{-- Valeur texte (sans :) --}}
+    size="large"
+/>
+```
+
+Dans le composant, on déclare les props acceptées :
+
+```php
 @props([
-    'livre',
-    'showActions' => true,
-    'showCategory' => true,
-    'compact' => false
+    'livre',              // Obligatoire
+    'showActions' => true, // Optionnel avec valeur par défaut
+    'size' => 'medium'
+])
+```
+
+#### **🎓 Concept 3 : Structure d'un Composant**
+
+Un composant Blade est un fichier dans `resources/views/components/` :
+
+```
+resources/views/components/
+├── livre-card.blade.php    → Utilisé avec <x-livre-card />
+├── alert.blade.php         → Utilisé avec <x-alert />
+└── navigation/
+    └── menu.blade.php      → Utilisé avec <x-navigation.menu />
+```
+
+---
+
+### **🛠️ Partie 2 : Exercice Pratique (10 min)**
+
+#### **📝 Exercice 2.1 : Créer un Composant Carte Livre**
+
+**Objectif** : Créer un composant réutilisable pour afficher une carte de livre
+
+**Étape 1** : Créer le fichier `resources/views/components/livre-card.blade.php`
+
+```blade
+{{-- 
+    Composant Carte Livre
+    Usage : <x-livre-card :livre="$livre" />
+--}}
+
+@props([
+    'livre',                    // Le modèle Livre (obligatoire)
+    'showActions' => true,      // Afficher les boutons d'action
+    'compact' => false          // Mode compact (moins de détails)
 ])
 
-{{-- TODO: Créer une carte livre avec : --}}
-{{-- 1. Mode compact/normal selon le prop --}}
-{{-- 2. Actions conditionnelles (voir/modifier/supprimer) --}}
-{{-- 3. Badge de disponibilité --}}
-{{-- 4. Icônes pour chaque information --}}
-{{-- 5. Hover effects CSS --}}
-
-<div class="card h-100 {{ $compact ? 'card-compact' : '' }}">
-    {{-- À COMPLÉTER --}}
+<div class="card h-100 shadow-sm hover-shadow">
+    {{-- En-tête avec catégorie --}}
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <span>📚 {{ $livre->categorie->nom ?? 'Sans catégorie' }}</span>
+        
+        {{-- Badge disponibilité --}}
+        @if($livre->disponible ?? true)
+            <span class="badge bg-success">Disponible</span>
+        @else
+            <span class="badge bg-secondary">Emprunté</span>
+        @endif
+    </div>
+    
+    {{-- Corps de la carte --}}
+    <div class="card-body">
+        {{-- Titre --}}
+        <h5 class="card-title">{{ $livre->titre }}</h5>
+        
+        {{-- Auteur --}}
+        <p class="card-text text-muted mb-2">
+            <strong>Auteur :</strong> {{ $livre->auteur }}
+        </p>
+        
+        {{-- Résumé (seulement si mode non compact) --}}
+        @if(!$compact && isset($livre->resume))
+            <p class="card-text small">
+                {{ Str::limit($livre->resume, 100) }}
+            </p>
+        @endif
+        
+        {{-- ISBN (seulement si mode non compact) --}}
+        @if(!$compact && isset($livre->isbn))
+            <p class="card-text small text-muted">
+                <strong>ISBN :</strong> {{ $livre->isbn }}
+            </p>
+        @endif
+    </div>
+    
+    {{-- Actions --}}
+    @if($showActions)
+        <div class="card-footer bg-light d-flex gap-2">
+            <a href="{{ route('livres.show', $livre) }}" 
+               class="btn btn-sm btn-primary flex-fill">
+                👁️ Voir
+            </a>
+            <a href="{{ route('livres.edit', $livre) }}" 
+               class="btn btn-sm btn-warning flex-fill">
+                ✏️ Modifier
+            </a>
+        </div>
+    @endif
 </div>
 
+{{-- Styles pour l'effet hover --}}
+@once
 @push('styles')
 <style>
-    .card-compact {
-        /* TODO: Styles pour le mode compact */
+    .hover-shadow {
+        transition: transform 0.2s, box-shadow 0.2s;
     }
-    .card:hover {
-        /* TODO: Effet hover */
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
     }
 </style>
 @endpush
+@endonce
 ```
 
-### **🏗️ Exercice 2.2 : Composant Pagination Personnalisée**
+**💡 Explication du code :**
+- `@props([...])` : Déclare les propriétés acceptées
+- `{{ $livre->categorie->nom ?? 'Sans catégorie' }}` : Affiche la catégorie ou valeur par défaut
+- `@if(!$compact)` : Affiche conditionnellement selon le mode
+- `Str::limit($livre->resume, 100)` : Tronque le texte à 100 caractères
+- `@once @push('styles')` : Ajoute le CSS une seule fois (même si composant utilisé plusieurs fois)
 
-**📝 Créer `resources/views/components/custom-pagination.blade.php` :**
+---
+
+#### **📝 Exercice 2.2 : Utiliser le Composant**
+
+**Objectif** : Remplacer le code HTML répété par le composant
+
+**Dans `resources/views/livres/index.blade.php` :**
 
 ```blade
-@props(['paginator'])
+@extends('layouts.app')
 
-{{-- TODO: Créer une pagination avec : --}}
-{{-- 1. Informations sur le nombre total --}}
-{{-- 2. Sélecteur de nombre d'éléments par page --}}
-{{-- 3. Navigation première/dernière page --}}
-{{-- 4. Design Bootstrap personnalisé --}}
+@section('content')
+<div class="container mt-4">
+    <h1>📚 Liste des Livres</h1>
+    
+    {{-- ... Formulaire de recherche (Module 1) ... --}}
+    
+    {{-- Résultats en grille de cartes --}}
+    <div class="row g-3">
+        @forelse($livres as $livre)
+            <div class="col-md-4">
+                {{-- ✅ Utilisation du composant --}}
+                <x-livre-card :livre="$livre" />
+            </div>
+        @empty
+            <div class="col-12">
+                <p class="text-muted text-center">Aucun livre trouvé.</p>
+            </div>
+        @endforelse
+    </div>
+    
+    {{-- Pagination --}}
+    <div class="mt-4">
+        {{ $livres->links() }}
+    </div>
+</div>
+@endsection
+```
 
-<div class="pagination-wrapper">
-    {{-- À COMPLÉTER --}}
+**Exemples d'utilisation avec différentes options :**
+
+```blade
+{{-- Mode normal avec actions --}}
+<x-livre-card :livre="$livre" />
+
+{{-- Mode compact sans actions --}}
+<x-livre-card :livre="$livre" :show-actions="false" compact />
+
+{{-- Compact avec actions --}}
+<x-livre-card :livre="$livre" :compact="true" />
+```
+
+---
+
+#### **📝 Exercice 2.3 : Créer un Composant Alert Réutilisable**
+
+**Objectif** : Créer un composant pour les messages flash
+
+**Créer `resources/views/components/alert.blade.php` :**
+
+```blade
+@props([
+    'type' => 'info',  // success, danger, warning, info
+    'dismissible' => true,
+    'icon' => null
+])
+
+@php
+    // Mapper les types aux icônes
+    $icons = [
+        'success' => '✅',
+        'danger' => '❌',
+        'warning' => '⚠️',
+        'info' => 'ℹ️'
+    ];
+    $displayIcon = $icon ?? $icons[$type] ?? 'ℹ️';
+@endphp
+
+<div class="alert alert-{{ $type }} {{ $dismissible ? 'alert-dismissible fade show' : '' }}" role="alert">
+    <strong>{{ $displayIcon }}</strong> {{ $slot }}
+    
+    @if($dismissible)
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    @endif
 </div>
 ```
 
-### **🏗️ Exercice 2.3 : Composant Formulaire Réutilisable**
+**Utilisation dans les vues :**
+
+```blade
+{{-- Message de succès --}}
+<x-alert type="success">
+    Le livre a été créé avec succès !
+</x-alert>
+
+{{-- Message d'erreur non dismissible --}}
+<x-alert type="danger" :dismissible="false">
+    Une erreur est survenue.
+</x-alert>
+
+{{-- Avec messages flash --}}
+@if(session('success'))
+    <x-alert type="success">{{ session('success') }}</x-alert>
+@endif
+```
+
+---
+
+### **✅ Vérification du Module 2**
+
+**Checklist de validation :**
+- [ ] Le composant `livre-card` affiche correctement toutes les informations
+- [ ] L'effet hover fonctionne (carte se soulève au survol)
+- [ ] Les boutons "Voir" et "Modifier" fonctionnent
+- [ ] Le mode compact masque bien le résumé et l'ISBN
+- [ ] Le composant `alert` affiche les messages avec les bonnes couleurs
 
 **📝 Créer `resources/views/components/form-field.blade.php` :**
 
@@ -224,21 +578,109 @@ public function index(Request $request)
 
 ---
 
-## ✅ Module 3 : Validation Personnalisée (12 min)
+## ✅ Module 3 : Validation Avancée avec Form Requests (15 min)
 
-### **🎯 Objectif :** Créer des règles de validation avancées et des Form Requests
+### **📖 Partie 1 : Comprendre les Concepts (5 min)**
 
-### **🏗️ Exercice 3.1 : Form Request Classes**
+#### **🎓 Concept 1 : Pourquoi utiliser des Form Requests ?**
 
-**📝 Créer les Form Requests :**
+**Sans Form Request** (validation dans le contrôleur) :
 
-```bash
-# TODO: Générer les Form Requests
-php artisan make:request StoreLivreRequest
-php artisan make:request UpdateLivreRequest
+```php
+// ❌ PROBLÈME : Code de validation mélangé avec la logique métier
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'titre' => 'required|max:255',
+        'auteur' => 'required|max:255',
+        'isbn' => 'required|size:13|unique:livres',
+        // ... 10 autres règles
+    ]);
+    
+    Livre::create($validated);
+    // ... autres actions
+}
+
+// Si on veut les mêmes règles pour update() → DUPLICATION
 ```
 
-**📝 Implémenter `app/Http/Requests/StoreLivreRequest.php` :**
+**Avec Form Request** (validation séparée) :
+
+```php
+// ✅ SOLUTION : Validation isolée et réutilisable
+public function store(StoreLivreRequest $request)
+{
+    Livre::create($request->validated());
+    // Contrôleur plus court et lisible
+}
+```
+
+**💡 Avantages :**
+- **Séparation des responsabilités** : Validation ≠ Logique métier
+- **Réutilisabilité** : Même validation pour store() et update()
+- **Testabilité** : Plus facile à tester
+- **Autorisation intégrée** : Peut inclure `authorize()`
+
+#### **🎓 Concept 2 : Structure d'une Form Request**
+
+```php
+class StoreLivreRequest extends FormRequest
+{
+    // 1. Autorisation : Qui peut utiliser ce formulaire ?
+    public function authorize()
+    {
+        return true; // ou Auth::check()
+    }
+    
+    // 2. Règles de validation
+    public function rules()
+    {
+        return [
+            'titre' => 'required|max:255',
+        ];
+    }
+    
+    // 3. Messages personnalisés (optionnel)
+    public function messages()
+    {
+        return [
+            'titre.required' => 'Le titre est obligatoire',
+        ];
+    }
+}
+```
+
+#### **🎓 Concept 3 : Règles de Validation Personnalisées**
+
+Laravel permet de créer vos propres règles :
+
+```php
+// Règle inline (simple)
+'isbn' => ['required', function ($attribute, $value, $fail) {
+    if (!$this->validateIsbn($value)) {
+        $fail("L'ISBN $value n'est pas valide.");
+    }
+}]
+
+// Règle dédiée (réutilisable)
+'isbn' => ['required', new ValidIsbn]
+```
+
+---
+
+### **🛠️ Partie 2 : Exercice Pratique (10 min)**
+
+#### **📝 Exercice 3.1 : Créer une Form Request**
+
+**Objectif** : Déplacer la validation du contrôleur vers une Form Request
+
+**Étape 1** : Générer la Form Request
+
+```bash
+php artisan make:request StoreLivreRequest
+```
+
+**Étape 2** : Implémenter `app/Http/Requests/StoreLivreRequest.php`
 
 ```php
 <?php
@@ -249,64 +691,298 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreLivreRequest extends FormRequest
 {
-    public function authorize()
+    /**
+     * Détermine si l'utilisateur est autorisé à faire cette requête
+     */
+    public function authorize(): bool
     {
-        // TODO: Logique d'autorisation
+        // TODO: Retourner true pour autoriser tout le monde
+        // Dans une vraie app, vérifier les permissions : Auth::user()->can('create', Livre::class)
         return true;
     }
 
-    public function rules()
+    /**
+     * Règles de validation
+     */
+    public function rules(): array
     {
         return [
-            // TODO: Règles de validation pour création
-            // 1. ISBN unique et format valide
-            // 2. Date de publication cohérente
-            // 3. Validation conditionnelle selon la catégorie
+            'titre' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+            'auteur' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+            'isbn' => [
+                'required',
+                'string',
+                'size:13',        // ISBN-13 fait exactement 13 chiffres
+                'unique:livres',  // Doit être unique dans la table livres
+                'regex:/^\d+$/',  // Uniquement des chiffres
+            ],
+            'resume' => [
+                'nullable',
+                'string',
+                'max:1000',
+            ],
+            'date_publication' => [
+                'nullable',
+                'date',
+                'before_or_equal:today', // Pas de date future
+            ],
+            'categorie_id' => [
+                'required',
+                'exists:categories,id', // Doit exister dans la table categories
+            ],
         ];
     }
 
-    public function messages()
+    /**
+     * Messages d'erreur personnalisés en français
+     */
+    public function messages(): array
     {
         return [
-            // TODO: Messages personnalisés en français
+            'titre.required' => 'Le titre est obligatoire.',
+            'titre.max' => 'Le titre ne peut pas dépasser :max caractères.',
+            
+            'auteur.required' => 'L\'auteur est obligatoire.',
+            'auteur.max' => 'Le nom de l\'auteur ne peut pas dépasser :max caractères.',
+            
+            'isbn.required' => 'L\'ISBN est obligatoire.',
+            'isbn.size' => 'L\'ISBN doit contenir exactement 13 chiffres.',
+            'isbn.unique' => 'Cet ISBN existe déjà dans la base de données.',
+            'isbn.regex' => 'L\'ISBN ne doit contenir que des chiffres.',
+            
+            'date_publication.before_or_equal' => 'La date de publication ne peut pas être dans le futur.',
+            
+            'categorie_id.required' => 'La catégorie est obligatoire.',
+            'categorie_id.exists' => 'Cette catégorie n\'existe pas.',
         ];
     }
 
-    public function attributes()
+    /**
+     * Noms d'attributs personnalisés pour les messages
+     */
+    public function attributes(): array
     {
         return [
-            // TODO: Noms d'attributs en français
+            'titre' => 'titre du livre',
+            'auteur' => 'nom de l\'auteur',
+            'isbn' => 'ISBN',
+            'categorie_id' => 'catégorie',
         ];
     }
 }
 ```
 
-### **🏗️ Exercice 3.2 : Règles de Validation Personnalisées**
+**� Explication du code :**
+- `authorize()` : Contrôle d'accès (true = tout le monde peut créer un livre)
+- `rules()` : Toutes les règles de validation
+- `messages()` : Messages personnalisés en français
+- `attributes()` : Noms d'attributs pour des messages plus clairs
+- `size:13` : Longueur exacte (ISBN-13)
+- `exists:categories,id` : Vérifie que la catégorie existe
+- `before_or_equal:today` : Date ≤ aujourd'hui
 
-**📝 Créer une règle custom pour l'ISBN :**
+---
+
+#### **📝 Exercice 3.2 : Utiliser la Form Request dans le Contrôleur**
+
+**Objectif** : Remplacer `Request` par `StoreLivreRequest`
+
+**Modifier `app/Http/Controllers/LivreController.php` :**
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Livre;
+use App\Models\Categorie;
+use App\Http\Requests\StoreLivreRequest; // ← Importer la Form Request
+use Illuminate\Http\Request;
+
+class LivreController extends Controller
+{
+    // ... autres méthodes (index, create, show) ...
+    
+    /**
+     * Enregistrer un nouveau livre
+     */
+    public function store(StoreLivreRequest $request) // ← Remplacer Request
+    {
+        // ✅ Plus besoin de $request->validate() !
+        // La validation est déjà faite automatiquement par Laravel
+        
+        // Créer le livre avec les données validées
+        $livre = Livre::create($request->validated());
+        
+        // Message flash de succès
+        return redirect()
+            ->route('livres.show', $livre)
+            ->with('success', 'Le livre "' . $livre->titre . '" a été créé avec succès !');
+    }
+}
+```
+
+**💡 Comment ça fonctionne ?**
+
+1. **Laravel intercepte** la requête avant qu'elle n'arrive au contrôleur
+2. **Exécute automatiquement** `authorize()` et `rules()`
+3. **Si validation échoue** : Redirige vers le formulaire avec les erreurs
+4. **Si validation réussit** : Passe au contrôleur avec `$request->validated()`
+
+---
+
+#### **📝 Exercice 3.3 : Créer une Règle de Validation Custom pour ISBN**
+
+**Objectif** : Valider le checksum de l'ISBN-13 (algorithme de vérification)
+
+**Étape 1** : Créer la règle personnalisée
 
 ```bash
-# TODO: Générer une règle personnalisée
 php artisan make:rule ValidIsbn
 ```
 
-**📝 Implémenter la validation ISBN-13 avec checksum :**
+**Étape 2** : Implémenter `app/Rules/ValidIsbn.php`
 
 ```php
 <?php
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class ValidIsbn implements Rule
+class ValidIsbn implements ValidationRule
 {
-    public function passes($attribute, $value)
+    /**
+     * Valide un ISBN-13
+     */
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        // TODO: Implémenter la validation ISBN-13
-        // 1. Vérifier la longueur (13 chiffres)
-        // 2. Calculer et vérifier le checksum
-        // 3. Valider le format (978 ou 979)
+        // Vérifier que c'est bien 13 chiffres
+        if (!preg_match('/^\d{13}$/', $value)) {
+            $fail("L'ISBN doit contenir exactement 13 chiffres.");
+            return;
+        }
+        
+        // Calculer le checksum ISBN-13
+        $sum = 0;
+        for ($i = 0; $i < 12; $i++) {
+            $digit = (int) $value[$i];
+            $sum += ($i % 2 === 0) ? $digit : $digit * 3;
+        }
+        
+        $checksum = (10 - ($sum % 10)) % 10;
+        $lastDigit = (int) $value[12];
+        
+        // Vérifier si le dernier chiffre correspond au checksum
+        if ($lastDigit !== $checksum) {
+            $fail("L'ISBN $value n'est pas valide (checksum incorrect).");
+        }
+    }
+}
+```
+
+**Étape 3** : Utiliser la règle dans la Form Request
+
+```php
+// Dans StoreLivreRequest.php
+use App\Rules\ValidIsbn;
+
+public function rules(): array
+{
+    return [
+        // ... autres champs ...
+        
+        'isbn' => [
+            'required',
+            'string',
+            'unique:livres',
+            new ValidIsbn, // ← Utiliser la règle personnalisée
+        ],
+    ];
+}
+```
+
+**💡 Explication de l'algorithme ISBN-13 :**
+- On multiplie les chiffres pairs par 1, les impairs par 3
+- On additionne le tout
+- Le dernier chiffre doit faire en sorte que la somme soit divisible par 10
+
+**Exemple avec ISBN valide : 9782100547357**
+```
+9×1 + 7×3 + 8×1 + 2×3 + 1×1 + 0×3 + 0×1 + 5×3 + 4×1 + 7×3 + 3×1 + 5×3 = 113
+Checksum = (10 - (113 % 10)) % 10 = 7 ✅
+```
+
+---
+
+### **✅ Vérification du Module 3**
+
+**Checklist de validation :**
+- [ ] La Form Request `StoreLivreRequest` est créée et fonctionne
+- [ ] Tous les champs sont validés avec les bonnes règles
+- [ ] Les messages d'erreur s'affichent en français
+- [ ] La règle personnalisée `ValidIsbn` fonctionne
+- [ ] Le contrôleur `store()` utilise `StoreLivreRequest` au lieu de `Request`
+- [ ] Tester avec un ISBN invalide : l'erreur s'affiche
+
+---
+
+## 🎯 Récapitulatif des 3 Modules
+
+### **📊 Ce que vous avez appris**
+
+| Module | Concepts | Compétences |
+|--------|----------|-------------|
+| **1. Recherche** | Query Builder, Request params, Pagination | Filtres dynamiques, URL persistantes |
+| **2. Composants** | Blade Components, Props, Slots | Code réutilisable, DRY |
+| **3. Validation** | Form Requests, Règles custom | Validation robuste, Séparation logique |
+
+### **✅ Barème de Notation (sur 15 points)**
+
+| Critère | Points | Description |
+|---------|---------|-------------|
+| **Module 1** | 5 pts | Recherche + Filtre catégorie fonctionnels |
+| **Module 2** | 5 pts | Composant livre-card réutilisable |
+| **Module 3** | 5 pts | Form Request avec validation ISBN |
+| **BONUS** | +2 pts | Règle ValidIsbn avec checksum |
+
+### **🎯 Niveaux de Compétence (sur 15)**
+
+- **13-15 pts** : Expert - Maîtrise complète des concepts avancés
+- **10-12 pts** : Avancé - Bonnes pratiques respectées
+- **7-9 pts** : Intermédiaire - Fonctionnalités de base implémentées
+- **< 7 pts** : Débutant - Réviser les concepts fondamentaux
+
+---
+
+## 📚 Ressources Complémentaires
+
+### **Documentation Laravel**
+- [Query Builder](https://laravel.com/docs/queries)
+- [Blade Components](https://laravel.com/docs/blade#components)
+- [Form Requests](https://laravel.com/docs/validation#form-request-validation)
+- [Validation Rules](https://laravel.com/docs/validation#available-validation-rules)
+
+### **Pour aller plus loin (optionnel)**
+- 📖 **Module Bonus 1** : Optimisation des requêtes (Eager Loading, Select)
+- 📖 **Module Bonus 2** : Export PDF/Excel (packages externes)
+- 📖 **Module Bonus 3** : Cache Redis pour améliorer les performances
+
+---
+
+**💡 Conseil pédagogique** : Si vous bloquez sur un exercice, **relisez la partie théorique** (📖 Comprendre les Concepts) avant de passer à la pratique. Les concepts sont expliqués avec des exemples concrets pour faciliter la compréhension.
+
+**Dernière mise à jour :** 6 octobre 2025
+
     }
 
     public function message()
@@ -321,57 +997,7 @@ class ValidIsbn implements Rule
 **📝 Objectifs à implémenter :**
 - Si catégorie = "Roman", le résumé devient obligatoire
 - Si pages > 1000, ajouter un champ "tome" obligatoire
-- Validation de cohérence date de publication vs création
-
----
-
-## 📱 Module 4 : Interface Mobile & UX (12 min)
-
-### **🎯 Objectif :** Optimiser l'interface pour mobile et améliorer l'expérience utilisateur
-
-### **🏗️ Exercice 4.1 : Navigation Mobile Optimisée**
-
-**📝 Améliorer le layout `resources/views/layouts/app.blade.php` :**
-
-```blade
-{{-- TODO: Implémenter : --}}
-{{-- 1. Menu hamburger avec animation --}}
-{{-- 2. Recherche rapide dans la navbar mobile --}}
-{{-- 3. Breadcrumb responsive --}}
-{{-- 4. Bottom navigation pour mobile --}}
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    {{-- À COMPLÉTER --}}
-</nav>
-
-{{-- TODO: Ajouter bottom navigation pour mobile --}}
-<div class="bottom-nav d-lg-none">
-    {{-- À COMPLÉTER --}}
-</div>
-
-@push('styles')
-<style>
-    /* TODO: CSS pour mobile */
-    @media (max-width: 768px) {
-        /* Styles mobile spécifiques */
-    }
-</style>
-@endpush
-```
-
-### **🏗️ Exercice 4.2 : Modales et Notifications**
-
-**📝 Créer un système de notifications toast :**
-
-```blade
-{{-- TODO: Component notification-toast.blade.php --}}
-@props(['type' => 'info', 'message', 'timeout' => 5000])
-
-<div class="toast" data-timeout="{{ $timeout }}">
-    {{-- À COMPLÉTER --}}
-</div>
-
-@push('scripts')
+**Dernière mise à jour :** 6 octobre 2025
 <script>
 // TODO: JavaScript pour auto-hide des toasts
 </script>
