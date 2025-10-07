@@ -29,11 +29,7 @@ TOTAL: 180 minutes (3h exactes)
 TOTAL: 180 minutes (3h exactes)
 ```
 
-### **⚡ Adaptations Pédagogiques**
-- **Templates Blade fournis** : Gain de 15-20 min sur création des vues
-- **Module 5 optionnel** : Performance/Export (PDF/Excel) = Exercice bonus maison
-- **Évaluation simplifiée** : 2 vues au lieu de 4 pour les débutants
-- **Pauses intégrées** : 10 min pour éviter la fatiguece et développer un système de vues sophistiqué avec Laravel
+
 
 ---
 
@@ -52,6 +48,44 @@ TOTAL: 180 minutes (3h exactes)
 - ✅ **Gérer les formulaires complexes** avec Route Model Binding
 - ✅ **Créer une interface utilisateur** moderne et responsive
 - ✅ **Optimiser les performances** des requêtes et vues
+
+---
+
+---
+
+## 🛠️ Commandes essentielles pour le premier lancement (hors Docker)
+
+Dans le terminal, exécutez :
+
+```bash
+composer install           # Installe les dépendances PHP
+npm install                # Installe les dépendances JS
+cp .env.example .env       # Copie le fichier d'environnement
+php artisan key:generate   # Génère la clé d'application
+php artisan migrate        # (optionnel) Crée les tables en base
+php artisan serve          # Démarre le serveur Laravel
+```
+
+Ensuite, ouvrez l’application sur http://localhost:8000.
+
+---
+
+## 🚀 Installation & Démarrage universelle
+
+Utilisez les scripts suivants pour installer et démarrer le projet, quel que soit l'environnement :
+
+```bash
+bash scripts/install.sh      # Installation automatique
+bash scripts/start.sh        # Démarrage du serveur Laravel
+bash scripts/check.sh        # Diagnostic (optionnel)
+```
+- Accès via http://localhost:8000
+
+**Remarques :**
+- Le script `install.sh` détecte automatiquement l’environnement (Codespace, Docker, local) et configure tout.
+- Le script `start.sh` attend la base de données, lance le serveur Laravel et affiche l’URL d’accès.
+- Pour vérifier l’installation, utilisez `bash scripts/check.sh`.
+
 
 ---
 
@@ -105,14 +139,11 @@ TOTAL: 180 minutes (3h exactes)
 ### **✅ Prérequis de la Séance**
 
 ```bash
-# 1. Vérifier que vous êtes sur la bonne branche
-git branch
-# Devrait afficher : * seance-03-controllers-views
 
-# 2. Vérifier l'état de la base de données
+# 1. Vérifier l'état de la base de données
 php artisan migrate:status
 
-# 3. S'assurer que les données existent
+# 2. S'assurer que les données existent
 php artisan tinker
 >>> App\Models\Livre::count()
 >>> App\Models\Categorie::count()
@@ -124,67 +155,6 @@ php artisan tinker
 - ✅ Séance 02 validée (Base de données SQLite)
 - ✅ Application BiblioTech fonctionnelle
 - ✅ Modèles Eloquent opérationnels
-
----
-
-## 🕒 Planning Recommandé (3 heures)
-
-### **� Pour les Débutants** (3h)
-```bash
-1. Lire 01-CONCEPTS + 02-GLOSSAIRE (30 min)
-2. Faire 03-DECOUVERTE (45 min)
-3. Faire 04-TP-PRATIQUE (90 min)
-4. Faire 06-EVALUATION (25 min)
-```
-
-### **🚀 Pour les Confirmés** (3h)
-```bash
-1. Survoler 01-02 (15 min)
-2. Faire 03-DECOUVERTE (30 min)
-3. Faire 04-TP-PRATIQUE (75 min)
-4. Faire 05-TP-PRATIQUE-EXERCICES (45 min)
-5. Faire 06-EVALUATION (15 min)
-```
-
----
-
-## 🏗️ Architecture MVC Complète
-
-### **🎭 Contrôleurs Resource**
-```php
-Route::resource('livres', LivreController::class);
-// Génère automatiquement 7 routes CRUD
-```
-
-### **🎨 Système de Vues**
-```
-resources/views/livres/
-├── index.blade.php      # Liste avec pagination
-├── show.blade.php       # Détail avec actions
-├── create.blade.php     # Formulaire création
-└── edit.blade.php       # Formulaire modification
-```
-
-### **✅ Validation Avancée**
-```php
-$validated = $request->validate([
-    'titre' => 'required|string|max:255',
-    'isbn' => 'required|unique:livres|size:13',
-    'categorie_id' => 'required|exists:categories,id'
-]);
-```
-
----
-
-## 🎯 Objectifs d'Apprentissage par Phase
-
-| Phase | Durée | Objectifs | Compétences |
-|-------|-------|-----------|-------------|
-| **Concepts** | 15-30 min | Comprendre MVC avancé | Théorie architecture |
-| **Découverte** | 30-45 min | Explorer l'existant | Analyse et observation |
-| **TP Guidé** | 75-90 min | Créer CRUD complet | Application encadrée |
-| **TP Autonome** | 45-60 min | Maîtriser l'avancé | Application autonome |
-| **Évaluation** | 15-45 min | Valider les acquis | Certification |
 
 ---
 
@@ -201,26 +171,6 @@ $validated = $request->validate([
 
 ---
 
-## � Aide et Ressources
-
-### **📚 Supports Pédagogiques**
-- 📖 **Concepts :** Théorie MVC avancée
-- 📝 **Glossaire :** Terminologie technique
-- 🔍 **Découverte :** Exploration guidée
-- 🛠️ **TP Guidé :** Apprentissage encadré
-- 💪 **TP Autonome :** Exercices avancés
-
-### **🆘 En Cas de Problème**
-1. **Consulter** les concepts et glossaire
-2. **Utiliser** la découverte pour comprendre
-3. **Suivre** le TP guidé étape par étape
-4. **Demander de l'aide** si nécessaire
-5. **Valider** avec l'évaluation
-
-### **🔗 Continuité Pédagogique**
-- **Séance 04 :** Authentification et autorisations
-- **Séance 05 :** API REST et AJAX
-- **Séance 06 :** Tests automatisés et qualité
 
 **🎉 Excellent parcours dans l'univers des contrôleurs et vues Laravel !**
 
