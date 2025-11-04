@@ -53,7 +53,11 @@ Le domaine de la gestion de bibliothèque offre un contexte idéal pour l'appren
 
 **Avantages :** ✅ Zéro installation ✅ Même environnement pour tous ✅ Accessible partout
 
-📖 **[Guide Complet Codespace](docs/INSTALLATION-CODESPACE.md)**
+📖 **Documentation Codespaces :**
+- 🚀 [Guide Rapide Codespace](docs/README-CODESPACE.md) - Vue d'ensemble et commandes
+- 📖 [Installation Détaillée](docs/INSTALLATION-CODESPACE.md) - Guide complet pas à pas
+- 🌐 [Accès Application](ACCES-CODESPACE.md) - Comment ouvrir l'app via PORTS
+- 🚨 [Dépannage URLs](docs/CODESPACE-TROUBLESHOOTING.md) - Résoudre problèmes localhost
 
 ---
 
